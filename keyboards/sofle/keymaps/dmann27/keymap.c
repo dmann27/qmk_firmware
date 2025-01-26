@@ -85,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GRV,   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                       KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,  KC_F11,
   KC_TAB,   MS_LEFT, MS_DOWN, MS_UP,   MS_RGHT, MS_BTN1,                     KC_HOME, KC_END,  KC_UP,   KC_LBRC,KC_RBRC, KC_F12,
   _______, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_CIRC, KC_LEFT, KC_DOWN, KC_RIGHT, KC_SCLN, KC_PIPE,
-  _______,  KC_EQL, KC_MINS, KC_PLUS, KC_LCBR, KC_RCBR, _______,       _______, _______, KC_GRV, KC_LBRC, KC_RBRC, KC_BSLS, _______,
+  _______,  KC_EQL, KC_MINS, KC_PLUS, KC_LCBR, KC_RCBR, _______,       _______, UG_TOGG, KC_GRV, KC_LBRC, KC_RBRC, KC_BSLS, _______,
                        KC_LGUI, KC_LCTL, KC_LALT, _______, KC_DEL,       _______, _______, _______, MACRO1, _______
 ),
 };
@@ -170,36 +170,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 */
-/*
+
 #if defined(ENCODER_MAP_ENABLE)
 const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
-    [_QWERTY] = { ENCODER_CCW_CW(KC_MPRV, KC_MNXT),  ENCODER_CCW_CW(KC_MPRV, KC_MNXT)  },
+    [_QWERTY] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU),  ENCODER_CCW_CW(KC_MPRV, KC_MNXT)  },
     [_COLEMAK] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU),  ENCODER_CCW_CW(KC_MPRV, KC_MNXT)  },
-    [_RAISE] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU),  ENCODER_CCW_CW(KC_MPRV, KC_MNXT)  },
+    [_RAISE] = { ENCODER_CCW_CW(UG_VALD, UG_VALU),  ENCODER_CCW_CW(UG_HUED, UG_HUEU)  },
     };
 #endif
-*/
 
 
 /*
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) { // First encoder
-        if (clockwise) {
-            tap_code(KC_VOLU);
-        } else {
-            tap_code(KC_VOLD);
-        }
-    } else if (index == 1) { // Second encoder 
-        if (clockwise) {
-            tap_code(KC_MNXT);
-        } else {
-            tap_code(KC_MPRV);
-        }
-    }
-    return false;
-}
-*/
-
 bool encoder_update_user(uint8_t index, bool clockwise) {
     switch (biton32(layer_state)) {
         case _QWERTY:
@@ -235,9 +216,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         case _RAISE:
             if (index == 0) { // First encoder
                 if (clockwise) {
-                    tap_code(KC_VOLU);
+                    tap_code(KC_HueDown);
                 } else {
-                    tap_code(KC_VOLD);
+                    tap_code(KC_HueUp);
                 }
             } else if (index == 1) { // Second encoder 
                 if (clockwise) {
@@ -250,6 +231,8 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     }
     return false;
 }
+*/
+
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -273,4 +256,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return true;
 }
+
+/*
+#ifdef OLED_ENABLE
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    if (!is_keyboard_master()) {
+        return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
+    }
+
+    return rotation;
+}
+
+bool oled_task_user(void) {
+    if (is_keyboard_master()) {
+        render_status();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
+    } else {
+        render_logo();  // Renders a static logo
+        oled_scroll_left();  // Turns on scrolling
+    }
+    return false;
+}
+#endif
+*/
 
